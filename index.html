@@ -6,11 +6,12 @@
     <title>Qalaa Flavoured Water</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            /* overflow-x: hidden; Removed as floating elements are gone */
         }
         /* Custom scrollbar for a nicer look */
         ::-webkit-scrollbar {
@@ -145,18 +146,50 @@
         /* --- #LiveQalaa Section Styles --- */
         #live-qalaa {
             position: relative;
-            min-height: 600px; /* Increased height for more space */
+            width: 100%; /* Ensure it takes full width */
+            padding-bottom: 25%; /* Maintain aspect ratio (e.g., 4:1 width:height) */
+            height: 0; /* Important for padding-bottom aspect ratio trick */
             background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/WhatsApp%20Image%202025-08-25%20at%2022.29.51_3a288d43.jpg?updatedAt=1756141679534'); /* Background image */
-            background-size: cover; /* Cover the entire section */
+            background-size: 100% auto; /* 100% width, auto height to maintain aspect ratio */
             background-position: center; /* Center the background image */
             background-repeat: no-repeat; /* Do not repeat the image */
+        }
+
+        /* Styles for like/dislike buttons */
+        .reaction-button {
+            position: absolute;
             display: flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 60px 20px; /* Increased padding */
+            gap: 4px; /* Space between icon and count */
+            padding: 6px 10px;
+            border-radius: 9999px; /* Full rounded corners */
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+            opacity: 0.9;
+            z-index: 20; /* Above carousel arrows */
         }
-        /* All .floating-element and @keyframes float styles removed */
+        .reaction-button:hover {
+            transform: translateY(-3px); /* Slight lift on hover */
+            opacity: 1;
+        }
+        .reaction-button i {
+            font-size: 1.1rem;
+        }
+
+        .like-button {
+            background-color: #ef4444; /* Tailwind red-500 */
+            bottom: 20px;
+            left: 20px;
+        }
+        .dislike-button {
+            background-color: #6b7280; /* Tailwind gray-500 */
+            bottom: 20px;
+            right: 20px;
+        }
     </style>
 </head>
 <body class="bg-white text-gray-800 antialiased leading-normal">
@@ -201,7 +234,7 @@
 
     <!-- NEW SECTION: #LiveQalaa with static background -->
     <section id="live-qalaa">
-        <!-- Text and floating elements removed -->
+        <!-- The background image will now fill this section completely -->
     </section>
     
     <hr class="border-gray-200">
@@ -213,8 +246,17 @@
 
             <!-- Product 1: Rose Cardamom & Coconut - Image Left, Text Right -->
             <div class="flex flex-col lg:flex-row items-center justify-center gap-12 md:gap-16 mb-24 lg:mb-32">
-                <div class="lg:w-1/2 flex justify-center items-center p-4 relative">
+                <div class="lg:w-1/2 flex justify-center items-center p-4 relative product-item" data-product-id="can1">
                     <img id="can1-image" src="https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%201%20front%20without%20background.png?updatedAt=1756134215444" alt="Qalaa Rose Cardamom & Coconut" class="w-full max-w-sm h-auto object-contain drop-shadow-xl transform hover:scale-105 transition-transform duration-300 cursor-zoom-in" onclick="showZoomedImage(this.src)" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/333333?text=Rose+Cardamom+Coconut';">
+                    
+                    <!-- Like/Dislike Buttons for Product 1 -->
+                    <div class="reaction-button like-button" onclick="event.stopPropagation(); updateReaction('can1', 'likes')">
+                        <i class="fas fa-heart"></i> <span id="can1-likes">0</span>
+                    </div>
+                    <div class="reaction-button dislike-button" onclick="event.stopPropagation(); updateReaction('can1', 'dislikes')">
+                        <i class="fas fa-thumbs-down"></i> <span id="can1-dislikes">0</span>
+                    </div>
+
                     <button class="carousel-arrow left-arrow" onclick="event.stopPropagation(); changeImage('can1', -1);">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -239,8 +281,17 @@
 
             <!-- Product 2: Jamun Himalayan Honey & Rali Mirch - Image Right, Text Left -->
             <div class="flex flex-col lg:flex-row-reverse items-center justify-center gap-12 md:gap-16">
-                <div class="lg:w-1/2 flex justify-center items-center p-4 relative">
+                <div class="lg:w-1/2 flex justify-center items-center p-4 relative product-item" data-product-id="can2">
                     <img id="can2-image" src="https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%202%20front%20without%20background_.png?updatedAt=1756134215477" alt="Qalaa Jamun Himalayan Honey & Rali Mirch" class="w-full max-w-sm h-auto object-contain drop-shadow-xl transform hover:scale-105 transition-transform duration-300 cursor-zoom-in" onclick="showZoomedImage(this.src)" onerror="this.onerror=null;this.src='https://placehold.co/600x800/f0f0f0/333333?text=Jamun+Himalayan+Honey+Rali+Mirch';">
+                    
+                    <!-- Like/Dislike Buttons for Product 2 -->
+                    <div class="reaction-button like-button" onclick="event.stopPropagation(); updateReaction('can2', 'likes')">
+                        <i class="fas fa-heart"></i> <span id="can2-likes">0</span>
+                    </div>
+                    <div class="reaction-button dislike-button" onclick="event.stopPropagation(); updateReaction('can2', 'dislikes')">
+                        <i class="fas fa-thumbs-down"></i> <span id="can2-dislikes">0</span>
+                    </div>
+
                     <button class="carousel-arrow left-arrow" onclick="event.stopPropagation(); changeImage('can2', -1);">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -353,6 +404,12 @@
         const can1ImageElement = document.getElementById('can1-image');
         const can2ImageElement = document.getElementById('can2-image');
 
+        // Initial reaction counts for products
+        let productReactions = {
+            can1: { likes: 0, dislikes: 0 },
+            can2: { likes: 0, dislikes: 0 }
+        };
+
         /**
          * Changes the displayed image for a given product.
          * @param {string} canId - The ID of the product ('can1' or 'can2').
@@ -398,6 +455,32 @@
         setInterval(() => {
             changeImage('can2', 1); // Cycle through images for can2
         }, 5000); // Change every 5 seconds
+
+        /**
+         * Updates the like/dislike count for a specific product.
+         * @param {string} productId - The ID of the product (e.g., 'can1', 'can2').
+         * @param {string} reactionType - The type of reaction ('likes' or 'dislikes').
+         */
+        function updateReaction(productId, reactionType) {
+            if (productReactions[productId]) {
+                productReactions[productId][reactionType]++;
+                document.getElementById(`${productId}-${reactionType}`).textContent = productReactions[productId][reactionType];
+            }
+        }
+
+        /**
+         * Initializes the displayed reaction counts.
+         */
+        function initializeReactionCounts() {
+            document.getElementById('can1-likes').textContent = productReactions.can1.likes;
+            document.getElementById('can1-dislikes').textContent = productReactions.can1.dislikes;
+            document.getElementById('can2-likes').textContent = productReactions.can2.likes;
+            document.getElementById('can2-dislikes').textContent = productReactions.can2.dislikes;
+        }
+
+        // Call to initialize counts when the page loads
+        document.addEventListener('DOMContentLoaded', initializeReactionCounts);
+
 
         // --- Zoom Modal Functions ---
         const zoomModal = document.getElementById('zoomModal');
@@ -463,14 +546,14 @@
             if (currentZoom > 1) { // Only drag if zoomed in
                 isDragging = true;
                 zoomedImage.style.cursor = 'grabbing';
-                startX = e.clientX;
-                startY = e.clientY;
-                // Get current transform values or initialize
-                const transform = window.getComputedStyle(zoomedImage).transform;
-                const matrix = new DOMMatrixReadOnly(transform);
-                startLeft = matrix.m41; // translateX
-                startTop = matrix.m42;  // translateY
             }
+            startX = e.clientX;
+            startY = e.clientY;
+            // Get current transform values or initialize
+            const transform = window.getComputedStyle(zoomedImage).transform;
+            const matrix = new DOMMatrixReadOnly(transform);
+            startLeft = matrix.m41; // translateX
+            startTop = matrix.m42;  // translateY
         });
 
         zoomedImage.addEventListener('mousemove', (e) => {
