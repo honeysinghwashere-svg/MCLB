@@ -154,7 +154,7 @@
             background-color: rgba(0,0,0,0.6);
             padding: 10px 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 10px (0,0,0,0.3);
             color: white;
         }
         .zoom-controls button {
@@ -259,7 +259,7 @@
              * @param {string} canId - The ID of the product ('can1' or 'can2').
              * @param {number} direction - 1 for next, -1 for previous.
              */
-            function changeImage(canId, direction) {
+            window.changeImage = function(canId, direction) { // Made globally accessible
                 let images, currentIndex, imageElement;
 
                 if (canId === 'can1') {
@@ -293,11 +293,11 @@
 
             // Automatic image scrolling
             setInterval(() => {
-                changeImage('can1', 1); // Cycle through images for can1
+                window.changeImage('can1', 1); // Cycle through images for can1
             }, 5000); // Change every 5 seconds
 
             setInterval(() => {
-                changeImage('can2', 1); // Cycle through images for can2
+                window.changeImage('can2', 1); // Cycle through images for can2
             }, 5000); // Change every 5 seconds
 
             /**
@@ -305,7 +305,7 @@
              * @param {string} productId - The ID of the product (e.g., 'can1', 'can2').
              * @param {string} reactionType - The type of reaction ('likes' or 'dislikes').
              */
-            function updateReaction(productId, reactionType) {
+            window.updateReaction = function(productId, reactionType) { // Made globally accessible
                 if (productReactions[productId]) {
                     productReactions[productId][reactionType]++;
                     document.getElementById(`${productId}-${reactionType}`).textContent = productReactions[productId][reactionType];
@@ -517,13 +517,11 @@
     <!-- Introductory Section: 0 Calorie, 0 Sweetener, 0 Sodium = Innocent! -->
     <section id="intro" class="py-12 md:py-16 bg-white text-center">
         <div class="container mx-auto px-4 max-w-4xl">
-            <h2 class="text-3xl md:text-5xl font-extrabold text-blue-800 mb-6 leading-tight">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-blue-800 mb-6 leading-tight">
                 0 Calorie, 0 Sweetener, 0 Sodium = Innocent!
             </h2>
             <p class="text-lg md:text-xl text-gray-700 leading-relaxed max-w-3xl mx-auto mb-10">
-                Qalaa Sparkling Water is refreshment at its best—just crisp bubbles and bright flavors that make
-                hydration fun. We've uniquely redefined sparkling water with our bold, colorful cans and innovative
-                flavors, offering a better-for-you alternative to soda and other traditional soft drinks.
+                Qalaa is refreshment at its best—just crisp bubbles and bright flavors that make hydration fun. We've uniquely redefined hydration with our bold, colorful cans and innovative flavors, offering a better-for-you alternative to soda and other traditional soft drinks.
             </p>
             <a href="#products" class="inline-block border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 transform hover:scale-105">
                 View All Flavors
@@ -623,7 +621,7 @@
                 At Qalaa, our passion lies in crafting a hydration experience that is as pure as it is exhilarating.
             </p>
             <p class="text-lg text-gray-700 leading-relaxed mb-6">
-                We began with a simple yet profound vision: to transform ordinary water into something extraordinary. Inspired by natural essences and committed to wholesome refreshment, we meticulously source the finest ingredients. Each Qalaa sparkling water is a testament to our dedication to quality, blending crisp, clean water with authentic fruit and spice notes.
+                We began with a simple yet profound vision: to transform ordinary water into something extraordinary. Inspired by natural essences and committed to wholesome refreshment, we meticulously source the finest ingredients. Each Qalaa water is a testament to our dedication to quality, blending crisp, clean water with authentic fruit and spice notes.
             </p>
             <p class="text-lg text-gray-700 leading-relaxed mb-10">
                 Beyond taste, we are deeply committed to sustainability and your well-being. Qalaa offers a guilt-free alternative to sugary beverages, ensuring a delightful and healthy way to stay hydrated. Join us on this journey to discover a world of vibrant flavors and pure refreshment.
@@ -639,7 +637,7 @@
         <div class="container mx-auto px-4 max-w-3xl">
             <h2 class="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">Ready to Experience Qalaa?</h2>
             <p class="text-lg md:text-xl text-gray-700 mb-10 max-w-2xl mx-auto">
-                Discover the perfect balance of flavor and refreshment. Find your favorite Qalaa sparkling water today.
+                Discover the perfect balance of flavor and refreshment. Find your favorite Qalaa water today.
             </p>
             <a href="#" class="inline-block border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white font-bold py-4 px-10 rounded-full shadow-md transition duration-300 transform hover:scale-105 text-lg">
                 Shop Now
