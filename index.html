@@ -146,13 +146,15 @@
         /* --- #LiveQalaa Section Styles --- */
         #live-qalaa {
             position: relative;
-            width: 100%; /* Ensure it takes full width */
-            padding-bottom: 25%; /* Maintain aspect ratio (e.g., 4:1 width:height) */
+            width: 100%;
+            /* Using calc for precise aspect ratio: (image_height / image_width) 1280x427 -> 427/1280 = 0.33359375 */
+            padding-bottom: calc(100% * (427 / 1280)); 
             height: 0; /* Important for padding-bottom aspect ratio trick */
-            background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/WhatsApp%20Image%202025-08-25%20at%2022.29.51_3a288d43.jpg?updatedAt=1756141679534'); /* Background image */
-            background-size: 100% auto; /* 100% width, auto height to maintain aspect ratio */
+            background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20232614.png?updatedAt=1756144602247'); /* Updated Background image */
+            background-size: contain; /* Contain the entire image without cropping */
             background-position: center; /* Center the background image */
             background-repeat: no-repeat; /* Do not repeat the image */
+            background-color: #ffffff; /* Add a background color to fill empty space if image aspect ratio doesn't perfectly match padding */
         }
 
         /* Styles for like/dislike buttons */
@@ -233,9 +235,11 @@
     </section>
 
     <!-- NEW SECTION: #LiveQalaa with static background -->
-    <section id="live-qalaa">
-        <!-- The background image will now fill this section completely -->
-    </section>
+    <div class="container mx-auto px-4">
+        <section id="live-qalaa">
+            <!-- The background image will now fit within the container and scale to be fully visible -->
+        </section>
+    </div>
     
     <hr class="border-gray-200">
 
