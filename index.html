@@ -10,7 +10,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+            /* overflow-x: hidden; Removed as floating elements are gone */
         }
         /* Custom scrollbar for a nicer look */
         ::-webkit-scrollbar {
@@ -142,56 +142,21 @@
             opacity: 0.7;
         }
 
-        /* --- #LiveQalaa Section Styles and Animations --- */
+        /* --- #LiveQalaa Section Styles --- */
         #live-qalaa {
             position: relative;
             min-height: 600px; /* Increased height for more space */
-            background-color: #ffffff; /* White background for the section */
-            overflow: hidden; /* Keep floating elements within */
+            background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/WhatsApp%20Image%202025-08-25%20at%2022.29.51_3a288d43.jpg?updatedAt=1756141679534'); /* Background image */
+            background-size: cover; /* Cover the entire section */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat; /* Do not repeat the image */
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 60px 20px; /* Increased padding */
         }
-
-        #live-qalaa h2 {
-            font-size: 6rem; /* Significantly larger font for the main title */
-            font-weight: 800; /* Extra bold */
-            color: #1a202c; /* Dark text */
-            z-index: 5; /* Above floating elements */
-            position: relative; /* To ensure z-index works */
-            line-height: 1; /* Adjust line height for large text */
-        }
-
-        .floating-element {
-            position: absolute;
-            font-size: 4rem; /* Increased size of emojis */
-            opacity: 0.8;
-            animation: float 10s ease-in-out infinite;
-        }
-
-        /* Adjusted delays, durations, and sizes for variety and better flow */
-        .floating-element.delay-1 { animation-delay: 1s; animation-duration: 9s; opacity: 0.7; font-size: 3.5rem; }
-        .floating-element.delay-2 { animation-delay: 2s; animation-duration: 11s; opacity: 0.9; font-size: 4.5rem; }
-        .floating-element.delay-3 { animation-delay: 3s; animation-duration: 8s; opacity: 0.6; font-size: 3rem; }
-        .floating-element.delay-4 { animation-delay: 4s; animation-duration: 12s; opacity: 0.85; font-size: 5rem; }
-        .floating-element.delay-5 { animation-delay: 0.5s; animation-duration: 7s; opacity: 0.75; font-size: 4rem; }
-        .floating-element.delay-6 { animation-delay: 2.5s; animation-duration: 10.5s; opacity: 0.8; font-size: 3.8rem; }
-        .floating-element.delay-7 { animation-delay: 1.5s; animation-duration: 9.5s; opacity: 0.7; font-size: 4.2rem; }
-        .floating-element.delay-8 { animation-delay: 3.5s; animation-duration: 8.5s; opacity: 0.9; font-size: 4.8rem; }
-        .floating-element.delay-9 { animation-delay: 0.8s; animation-duration: 10s; opacity: 0.65; font-size: 3rem;}
-        .floating-element.delay-10 { animation-delay: 2.2s; animation-duration: 7.5s; opacity: 0.8; font-size: 4rem;}
-        .floating-element.delay-11 { animation-delay: 4.1s; animation-duration: 11.5s; opacity: 0.7; font-size: 3.7rem;}
-
-
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(8deg); } /* Increased movement */
-            50% { transform: translateY(0px) rotate(-8deg); }
-            75% { transform: translateY(20px) rotate(8deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
-        }
+        /* All .floating-element and @keyframes float styles removed */
     </style>
 </head>
 <body class="bg-white text-gray-800 antialiased leading-normal">
@@ -199,8 +164,8 @@
     <header class="bg-white text-gray-900 shadow-sm py-4 px-6 md:px-12 border-b border-gray-100 sticky top-0 z-50">
         <div class="container mx-auto flex justify-between items-center">
             <!-- Brand Logo/Name -->
-            <a href="#" class="h-20 md:h-24 flex items-center">
-                <img src="https://ik.imagekit.io/97vbpbrok/can_overlays/Create%20a%20luxurious%20logo%20for%20the%20brand%20QALAA,%20reflecting%20Indian%20heritage%20with%20a%20modern%20twist.%20The%20logo%20should%20feature%20the%20brand%20name%20_QALAA_%20in%20bold,%20serif%20typography%20with%20a%20cut-out%20fill%20inspired%20by%20royal%20elephant%20m.jpg?updatedAt=1756137097133" alt="Qalaa Logo" class="h-full object-contain">
+            <a href="#" class="h-12 md:h-16 flex items-center">
+                <img src="https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20223715.png?updatedAt=1756141679077" alt="Qalaa Logo" class="h-full object-contain">
             </a>
             <!-- Navigation Links -->
             <nav class="hidden md:flex space-x-8">
@@ -234,24 +199,9 @@
         </div>
     </section>
 
-    <!-- NEW SECTION: #LiveQalaa with floating elements -->
+    <!-- NEW SECTION: #LiveQalaa with static background -->
     <section id="live-qalaa">
-        <h2 class="z-10">#LiveQalaa</h2>
-        <div class="floating-element" style="left: 5%; top: 10%;">🍋</div>
-        <div class="floating-element delay-1" style="left: 15%; top: 40%;">🍓</div>
-        <div class="floating-element delay-2" style="left: 80%; top: 20%;">☀️</div>
-        <div class="floating-element delay-3" style="left: 60%; top: 70%;">🫐</div>
-        <div class="floating-element delay-4" style="left: 25%; top: 80%;">🌴</div>
-        <div class="floating-element delay-5" style="left: 90%; top: 50%;">⭐</div>
-        <div class="floating-element delay-6" style="left: 40%; top: 20%;">🔵</div>
-        <div class="floating-element delay-7" style="left: 70%; top: 85%;">🟢</div>
-        <div class="floating-element delay-8" style="left: 50%; top: 5%; font-size: 4rem;">💧</div>
-        <!-- New flower elements -->
-        <div class="floating-element delay-9" style="left: 10%; top: 25%; color: #FFD700;">🌼</div>
-        <div class="floating-element delay-10" style="left: 85%; top: 75%; color: #FF69B4;">🌸</div>
-        <div class="floating-element delay-11" style="left: 30%; top: 55%; color: #9370DB;">🌷</div>
-        <div class="floating-element delay-2" style="left: 75%; top: 40%; font-size: 3.8rem; color: #ADFF2F;">🌿</div>
-        <div class="floating-element delay-4" style="left: 20%; top: 7%; font-size: 3.5rem; color: #FF4500;">🍊</div>
+        <!-- Text and floating elements removed -->
     </section>
     
     <hr class="border-gray-200">
@@ -351,8 +301,8 @@
     <footer id="contact" class="bg-gray-50 text-gray-700 py-10 px-6 md:px-12 border-t border-gray-200">
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center justify-between">
             <div class="text-center md:text-left">
-                <a href="#" class="h-20 md:h-24 flex items-center justify-center md:justify-start">
-                    <img src="https://ik.imagekit.io/97vbpbrok/can_overlays/Create%20a%20luxurious%20logo%20for%20the%20brand%20QALAA,%20reflecting%20Indian%20heritage%20with%20a%20modern%20twist.%20The%20logo%20should%20feature%20the%20brand%20name%20_QALAA_%20in%20bold,%20serif%20typography%20with%20a%20cut-out%20fill%20inspired%20by%20royal%20elephant%20m.jpg?updatedAt=1756137097133" alt="Qalaa Logo" class="h-full object-contain">
+                <a href="#" class="h-12 md:h-16 flex items-center justify-center md:justify-start">
+                    <img src="https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20223715.png?updatedAt=1756141679077" alt="Qalaa Logo" class="h-full object-contain">
                 </a>
                 <p class="text-sm mt-2">Refreshing hydration, naturally flavored.</p>
             </div>
