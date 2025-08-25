@@ -410,6 +410,7 @@
             <button class="flavor-close-button" onclick="hideFlavorStoryModal()">X</button>
             <h3 id="flavorStoryTitle" class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4"></h3>
             <p id="flavorStoryContent" class="text-base md:text-lg text-gray-700 leading-relaxed"></p>
+            <!-- Restored the loading indicator div, but it's always hidden as content is static -->
             <div id="flavorStoryLoading" class="hidden mt-4">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
                 <p class="text-gray-600 mt-2">Crafting your flavor journey...</p>
@@ -492,7 +493,6 @@
         /**
          * Updates the like/dislike count for a specific product.
          * @param {string} productId - The ID of the product (e.g., 'can1', 'can2').
-         * @param {string} reactionType - The type of reaction ('likes' or 'dislikes').
          */
         function updateReaction(productId, reactionType) {
             if (productReactions[productId]) {
@@ -615,86 +615,60 @@
         const flavorStoryModal = document.getElementById('flavorStoryModal');
         const flavorStoryTitle = document.getElementById('flavorStoryTitle');
         const flavorStoryContent = document.getElementById('flavorStoryContent');
-        const flavorStoryLoading = document.getElementById('flavorStoryLoading');
+        // The loading indicator element exists but is permanently hidden in HTML.
+        // const flavorStoryLoading = document.getElementById('flavorStoryLoading'); // No longer actively used in JS for class toggling
 
-        // Function to simulate exponential backoff for API retries
-        async function fetchWithExponentialBackoff(url, options, retries = 5, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (!response.ok) {
-                        // If it's a server error or rate limit, retry
-                        if (response.status === 429 || response.status >= 500) {
-                            throw new Error(`Server error: ${response.status}`);
-                        } else {
-                            // Other client errors (e.g., 400, 404) are not retryable
-                            const errorBody = await response.json();
-                            console.error('Non-retryable API error:', errorBody);
-                            throw new Error(`API error: ${response.status} - ${errorBody.error?.message || response.statusText}`);
-                        }
-                    }
-                    return response;
-                } catch (error) {
-                    if (i < retries - 1) {
-                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
-                    } else {
-                        throw error; // Re-throw after last retry attempt
-                    }
-                }
-            }
-        }
+        // Define static content for each flavor story
+        const flavorStories = {
+            'Rose Cardamom & Coconut': `
+                <p class="mb-4">
+                    Embark on a fragrant journey with our <strong>Rose Cardamom & Coconut</strong> sparkling water. 🌹 Our exquisite rose petals are sourced from the lush valleys of <strong>Kannauj, India</strong>, renowned for its ancient perfumery traditions, infusing a delicate, romantic essence.
+                </p>
+                <p class="mb-4">
+                    The warm, aromatic embrace of cardamom pods hails from the spice gardens of <strong>Kerala, India</strong>, where families have perfected its cultivation for generations, lending a comforting yet exotic spice. 🌿
+                </p>
+                <p class="mb-4">
+                    Finally, the creamy, tropical whisper of coconut 🥥 is gathered from sun-kissed groves in the coastal regions of <strong>South India</strong>, adding a silky smooth finish.
+                </p>
+                <p>
+                    Together, these authentic flavors create a harmonious symphony, a story of ancient lands and serene moments, bottled for your pure indulgence. ✨ Taste the romance of India in every sparkling sip!
+                </p>
+            `,
+            'Jamun Himalayan Honey & Rali Mirch': `
+                <p class="mb-4">
+                    Prepare for a captivating adventure with our <strong>Jamun Himalayan Honey & Rali Mirch</strong> sparkling water! 💜 Our vibrant jamun, with its distinctive tartness, comes from the heartlands of <strong>Uttar Pradesh, India</strong>, a fruit celebrated for its bold character and rich heritage.
+                </p>
+                <p class="mb-4">
+                    The golden sweetness of our Himalayan honey 🏔️ is lovingly gathered by resilient beekeepers from the pristine foothills of the <strong>Indian Himalayas</strong>, offering a natural, earthy balance.
+                </p>
+                <p class="mb-4">
+                    And for that unforgettable kick, the fiery Rali Mirch 🌶️ (a specific red chili) is carefully cultivated in the sun-drenched fields of <strong>Rajasthan, India</strong>, adding a surprising, yet perfectly balanced, heat.
+                </p>
+                <p>
+                    This is a flavor profile that dares to be different, a narrative woven with tradition, zest, and the untamed spirit of India. 🔥 Experience the thrill and depth of India with every adventurous gulp!
+                </p>
+            `
+        };
 
         /**
-         * Generates and displays a flavor story using the Gemini API.
-         * @param {string} productId - The ID of the product.
+         * Displays a flavor story based on the flavor name.
+         * @param {string} productId - The ID of the product (unused, but kept for function signature consistency).
          * @param {string} flavorName - The name of the flavor.
          */
         async function showFlavorStoryModal(productId, flavorName) {
             flavorStoryTitle.textContent = `The Story of ${flavorName}`;
-            flavorStoryContent.innerHTML = ''; // Use innerHTML to allow for HTML elements from AI
-            flavorStoryLoading.classList.remove('hidden'); // Show loading indicator
-            flavorStoryModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            flavorStoryContent.innerHTML = ''; // Clear previous content
+            // The loading indicator is always hidden in HTML, so no JS manipulation needed here.
 
-            let promptText;
-            if (flavorName === 'Rose Cardamom & Coconut') {
-                promptText = `Generate a short, engaging story (around 150-200 words) about the journey and authentic origins of Rose Cardamom & Coconut flavors for a sparkling water brand. Avoid using asterisks for formatting. Use relevant emojis (like 🌹, 🌿, 🥥, ✨) and incorporate subtle HTML like <br> for line breaks to make it visually appealing. Emphasize their exotic nature, specific regions (e.g., India for cardamom, France/Turkey for rose, tropical islands for coconut), traditional uses, and how they evoke a sense of romance and serenity. Make it a story people can connect with, flowing naturally with emotional language.`;
-            } else if (flavorName === 'Jamun Himalayan Honey & Rali Mirch') {
-                promptText = `Generate a short, engaging story (around 150-200 words) about the bold journey and authentic origins of Jamun, Himalayan Honey, and Rali Mirch for a sparkling water brand. Avoid using asterisks for formatting. Use relevant emojis (like 💜, 🏔️, 🌶️, 🔥) and incorporate subtle HTML like <br> for line breaks to make it visually appealing. Emphasize their unique Indian heritage, the specific regions (e.g., Himalayan foothills for honey, Indian subcontinent for jamun and rali mirch), traditional significance, and how they offer an unforgettable taste adventure with a surprising twist. Make it a story people can connect with, flowing naturally with emotional language.`;
+            const story = flavorStories[flavorName];
+            if (story) {
+                flavorStoryContent.innerHTML = story;
             } else {
-                flavorStoryContent.innerHTML = "Story not available for this flavor.";
-                flavorStoryLoading.classList.add('hidden');
-                return;
+                flavorStoryContent.innerHTML = "Story not available for this flavor. Please check back soon!";
             }
-
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: promptText }] });
-            const payload = { contents: chatHistory };
-            const apiKey = ""; // Canvas will automatically provide this in runtime
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchWithExponentialBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const result = await response.json();
-                
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    const text = result.candidates[0].content.parts[0].text;
-                    flavorStoryContent.innerHTML = text; // Use innerHTML to render emojis and HTML
-                } else {
-                    flavorStoryContent.innerHTML = "Failed to generate story. Please try again.";
-                }
-            } catch (error) {
-                console.error("Error fetching flavor story:", error);
-                flavorStoryContent.innerHTML = "Error loading story. Please try again later.";
-            } finally {
-                flavorStoryLoading.classList.add('hidden'); // Hide loading indicator
-            }
+            
+            flavorStoryModal.classList.add('active'); // Make the modal visible
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
         }
 
         /**
