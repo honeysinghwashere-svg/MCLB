@@ -56,7 +56,7 @@
         }
 
         /* Styles for the zoom modal */
-        .zoom-modal-overlay {
+        .zoom-modal-overlay, .flavor-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -71,19 +71,34 @@
             visibility: hidden;
             transition: opacity 0.3s ease;
         }
-        .zoom-modal-overlay.active {
+        .zoom-modal-overlay.active, .flavor-modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
-        .zoom-modal-content {
+        .zoom-modal-content, .flavor-modal-content {
             position: relative;
+            background-color: white;
+            padding: 2.5rem; /* Increased padding */
+            border-radius: 0.75rem; /* rounded-lg */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
             max-width: 90vw;
             max-height: 90vh;
+            overflow-y: auto; /* Enable scrolling for long content */
             display: flex;
-            flex-direction: column; /* Allow controls above/below image */
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            color: #374151; /* text-gray-700 */
+            text-align: center;
+            transform: translateY(20px); /* Initial subtle animation */
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            opacity: 0;
         }
+        .flavor-modal-overlay.active .flavor-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
         .zoom-modal-image-wrapper {
             max-width: 100%;
             max-height: 100%;
@@ -101,17 +116,20 @@
             transition: transform 0.1s ease-out; /* Smooth zoom transition */
             cursor: grab; /* Indicate draggable */
         }
-        .zoom-close-button {
+        .zoom-close-button, .flavor-close-button {
             position: absolute;
             top: 10px;
             right: 10px;
             background: none;
             border: none;
             font-size: 2rem;
-            color: white;
+            color: #6b7280; /* Tailwind gray-500 */
             cursor: pointer;
             z-index: 1001;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            transition: color 0.2s ease;
+        }
+        .flavor-close-button:hover {
+            color: #ef4444; /* Tailwind red-500 */
         }
         .zoom-controls {
             display: flex;
@@ -241,8 +259,6 @@
         </section>
     </div>
     
-    <hr class="border-gray-200">
-
     <!-- Products Section - Alternating Image/Text Layout, with carousels -->
     <section id="products" class="py-16 md:py-24 bg-white">
         <div class="container mx-auto px-4">
@@ -277,7 +293,7 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         A delicate fusion of floral rose, aromatic cardamom, and creamy coconut. This exquisite blend offers a soothing and exotic hydration experience, transporting your senses to a serene oasis with every sip.
                     </p>
-                    <a href="#" class="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 transform hover:scale-105">
+                    <a href="#" class="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 transform hover:scale-105" onclick="event.stopPropagation(); showFlavorStoryModal('can1', 'Rose Cardamom & Coconut')">
                         Taste the Romance
                     </a>
                 </div>
@@ -312,7 +328,7 @@
                     <p class="text-lg text-gray-700 leading-relaxed mb-8">
                         Dare to experience the bold fusion of tangy jamun, sweet Himalayan honey, and a surprising hint of spicy rali mirch. This unique flavor profile delivers an unforgettable taste adventure with every invigorating drop.
                     </p>
-                    <a href="#" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 transform hover:scale-105">
+                    <a href="#" class="inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full shadow-md transition duration-300 transform hover:scale-105" onclick="event.stopPropagation(); showFlavorStoryModal('can2', 'Jamun Himalayan Honey & Rali Mirch')">
                         Savor the Spice
                     </a>
                 </div>
@@ -384,6 +400,19 @@
                 <button id="zoomOutBtn" onclick="handleZoom(-1)" disabled>-</button>
                 <span id="zoomLevelText">100%</span>
                 <button id="zoomInBtn" onclick="handleZoom(1)">+</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Flavor Story Modal Structure -->
+    <div id="flavorStoryModal" class="flavor-modal-overlay" onclick="hideFlavorStoryModal()">
+        <div class="flavor-modal-content" onclick="event.stopPropagation()">
+            <button class="flavor-close-button" onclick="hideFlavorStoryModal()">X</button>
+            <h3 id="flavorStoryTitle" class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4"></h3>
+            <p id="flavorStoryContent" class="text-base md:text-lg text-gray-700 leading-relaxed"></p>
+            <div id="flavorStoryLoading" class="hidden mt-4">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <p class="text-gray-600 mt-2">Crafting your flavor journey...</p>
             </div>
         </div>
     </div>
@@ -580,6 +609,103 @@
                 zoomedImage.style.cursor = 'grab';
             }
         });
+
+
+        // --- Flavor Story Modal Functions ---
+        const flavorStoryModal = document.getElementById('flavorStoryModal');
+        const flavorStoryTitle = document.getElementById('flavorStoryTitle');
+        const flavorStoryContent = document.getElementById('flavorStoryContent');
+        const flavorStoryLoading = document.getElementById('flavorStoryLoading');
+
+        // Function to simulate exponential backoff for API retries
+        async function fetchWithExponentialBackoff(url, options, retries = 5, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        // If it's a server error or rate limit, retry
+                        if (response.status === 429 || response.status >= 500) {
+                            throw new Error(`Server error: ${response.status}`);
+                        } else {
+                            // Other client errors (e.g., 400, 404) are not retryable
+                            const errorBody = await response.json();
+                            console.error('Non-retryable API error:', errorBody);
+                            throw new Error(`API error: ${response.status} - ${errorBody.error?.message || response.statusText}`);
+                        }
+                    }
+                    return response;
+                } catch (error) {
+                    if (i < retries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay * Math.pow(2, i)));
+                    } else {
+                        throw error; // Re-throw after last retry attempt
+                    }
+                }
+            }
+        }
+
+        /**
+         * Generates and displays a flavor story using the Gemini API.
+         * @param {string} productId - The ID of the product.
+         * @param {string} flavorName - The name of the flavor.
+         */
+        async function showFlavorStoryModal(productId, flavorName) {
+            flavorStoryTitle.textContent = `The Story of ${flavorName}`;
+            flavorStoryContent.innerHTML = ''; // Use innerHTML to allow for HTML elements from AI
+            flavorStoryLoading.classList.remove('hidden'); // Show loading indicator
+            flavorStoryModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+
+            let promptText;
+            if (flavorName === 'Rose Cardamom & Coconut') {
+                promptText = `Generate a short, engaging story (around 150-200 words) about the journey and authentic origins of Rose Cardamom & Coconut flavors for a sparkling water brand. Avoid using asterisks for formatting. Use relevant emojis (like 🌹, 🌿, 🥥, ✨) and incorporate subtle HTML like <br> for line breaks to make it visually appealing. Emphasize their exotic nature, specific regions (e.g., India for cardamom, France/Turkey for rose, tropical islands for coconut), traditional uses, and how they evoke a sense of romance and serenity. Make it a story people can connect with, flowing naturally with emotional language.`;
+            } else if (flavorName === 'Jamun Himalayan Honey & Rali Mirch') {
+                promptText = `Generate a short, engaging story (around 150-200 words) about the bold journey and authentic origins of Jamun, Himalayan Honey, and Rali Mirch for a sparkling water brand. Avoid using asterisks for formatting. Use relevant emojis (like 💜, 🏔️, 🌶️, 🔥) and incorporate subtle HTML like <br> for line breaks to make it visually appealing. Emphasize their unique Indian heritage, the specific regions (e.g., Himalayan foothills for honey, Indian subcontinent for jamun and rali mirch), traditional significance, and how they offer an unforgettable taste adventure with a surprising twist. Make it a story people can connect with, flowing naturally with emotional language.`;
+            } else {
+                flavorStoryContent.innerHTML = "Story not available for this flavor.";
+                flavorStoryLoading.classList.add('hidden');
+                return;
+            }
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: promptText }] });
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // Canvas will automatically provide this in runtime
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchWithExponentialBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+                
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    flavorStoryContent.innerHTML = text; // Use innerHTML to render emojis and HTML
+                } else {
+                    flavorStoryContent.innerHTML = "Failed to generate story. Please try again.";
+                }
+            } catch (error) {
+                console.error("Error fetching flavor story:", error);
+                flavorStoryContent.innerHTML = "Error loading story. Please try again later.";
+            } finally {
+                flavorStoryLoading.classList.add('hidden'); // Hide loading indicator
+            }
+        }
+
+        /**
+         * Hides the flavor story modal.
+         */
+        function hideFlavorStoryModal() {
+            flavorStoryModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restore scrolling
+            flavorStoryContent.innerHTML = ''; // Clear content
+            flavorStoryTitle.textContent = ''; // Clear title
+        }
     </script>
 </body>
 </html>
