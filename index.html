@@ -55,7 +55,7 @@
             right: 10px;
         }
 
-        /* Styles for the zoom modal */
+        /* Styles for the zoom and flavor modals */
         .zoom-modal-overlay, .flavor-modal-overlay {
             position: fixed;
             top: 0;
@@ -66,55 +66,71 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
+            z-index: 9999; 
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease; /* Ensure visibility transitions too */
         }
         .zoom-modal-overlay.active, .flavor-modal-overlay.active {
             opacity: 1;
             visibility: visible;
         }
+
         .zoom-modal-content, .flavor-modal-content {
             position: relative;
             background-color: white;
-            padding: 2.5rem; /* Increased padding */
-            border-radius: 0.75rem; /* rounded-lg */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            padding: 2.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             max-width: 90vw;
             max-height: 90vh;
-            overflow-y: auto; /* Enable scrolling for long content */
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: #374151; /* text-gray-700 */
+            color: #374151;
             text-align: center;
-            transform: translateY(20px); /* Initial subtle animation */
             transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        }
+
+        /* Explicitly hide and position content when overlay is NOT active */
+        .flavor-modal-overlay:not(.active) .flavor-modal-content {
+            transform: translateY(20px);
             opacity: 0;
         }
+        /* Explicitly show and reset position when overlay IS active */
         .flavor-modal-overlay.active .flavor-modal-content {
             transform: translateY(0);
             opacity: 1;
         }
         
+        /* New explicit rules for zoom modal content visibility and animation */
+        .zoom-modal-overlay:not(.active) .zoom-modal-content {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        .zoom-modal-overlay.active .zoom-modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
         .zoom-modal-image-wrapper {
             max-width: 100%;
             max-height: 100%;
-            overflow: hidden; /* Hide parts of image when zoomed in */
-            display: flex; /* For centering the image */
+            overflow: hidden;
+            display: flex;
             align-items: center;
             justify-content: center;
-            flex-grow: 1; /* Allow wrapper to take available space */
+            flex-grow: 1;
         }
         .zoom-modal-content img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            transform: scale(1); /* Initial scale */
-            transition: transform 0.1s ease-out; /* Smooth zoom transition */
-            cursor: grab; /* Indicate draggable */
+            transform: scale(1);
+            transition: transform 0.1s ease-out;
+            cursor: grab;
         }
         .zoom-close-button, .flavor-close-button {
             position: absolute;
@@ -123,13 +139,13 @@
             background: none;
             border: none;
             font-size: 2rem;
-            color: #6b7280; /* Tailwind gray-500 */
+            color: #6b7280;
             cursor: pointer;
             z-index: 1001;
             transition: color 0.2s ease;
         }
         .flavor-close-button:hover {
-            color: #ef4444; /* Tailwind red-500 */
+            color: #ef4444;
         }
         .zoom-controls {
             display: flex;
@@ -142,7 +158,7 @@
             color: white;
         }
         .zoom-controls button {
-            background-color: #3b82f6; /* Tailwind blue-500 */
+            background-color: #3b82f6;
             color: white;
             border: none;
             border-radius: 6px;
@@ -153,10 +169,10 @@
             transition: background-color 0.2s ease;
         }
         .zoom-controls button:hover {
-            background-color: #2563eb; /* Tailwind blue-600 */
+            background-color: #2563eb;
         }
         .zoom-controls button:disabled {
-            background-color: #6b7280; /* Tailwind gray-500 */
+            background-color: #6b7280;
             cursor: not-allowed;
             opacity: 0.7;
         }
@@ -165,14 +181,13 @@
         #live-qalaa {
             position: relative;
             width: 100%;
-            /* Using calc for precise aspect ratio: (image_height / image_width) 1280x427 -> 427/1280 = 0.33359375 */
             padding-bottom: calc(100% * (427 / 1280)); 
-            height: 0; /* Important for padding-bottom aspect ratio trick */
-            background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20232614.png?updatedAt=1756144602247'); /* Updated Background image */
-            background-size: contain; /* Contain the entire image without cropping */
-            background-position: center; /* Center the background image */
-            background-repeat: no-repeat; /* Do not repeat the image */
-            background-color: #ffffff; /* Add a background color to fill empty space if image aspect ratio doesn't perfectly match padding */
+            height: 0;
+            background-image: url('https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20232614.png?updatedAt=1756144602247');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #ffffff;
         }
 
         /* Styles for like/dislike buttons */
@@ -180,9 +195,9 @@
             position: absolute;
             display: flex;
             align-items: center;
-            gap: 4px; /* Space between icon and count */
+            gap: 4px;
             padding: 6px 10px;
-            border-radius: 9999px; /* Full rounded corners */
+            border-radius: 9999px;
             font-size: 0.9rem;
             font-weight: 600;
             color: white;
@@ -190,10 +205,10 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
             opacity: 0.9;
-            z-index: 20; /* Above carousel arrows */
+            z-index: 20;
         }
         .reaction-button:hover {
-            transform: translateY(-3px); /* Slight lift on hover */
+            transform: translateY(-3px);
             opacity: 1;
         }
         .reaction-button i {
@@ -201,16 +216,280 @@
         }
 
         .like-button {
-            background-color: #ef4444; /* Tailwind red-500 */
+            background-color: #ef4444;
             bottom: 20px;
             left: 20px;
         }
         .dislike-button {
-            background-color: #6b7280; /* Tailwind gray-500 */
+            background-color: #6b7280;
             bottom: 20px;
             right: 20px;
         }
     </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Arrays of image URLs for each product
+            const can1Images = [
+                "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%201%20front%20without%20background.png?updatedAt=1756134215444",
+                "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%201%20the%20other%20side%20without%20background.png?updatedAt=1756134215558"
+            ];
+
+            const can2Images = [
+                "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%202%20front%20without%20background_.png?updatedAt=1756134215477",
+                "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%202%20other%20side%20with%20background.png?updatedAt=1756134215579"
+            ];
+
+            // Current index for each product's image
+            let can1CurrentIndex = 0;
+            let can2CurrentIndex = 0;
+
+            // Get initial image elements
+            const can1ImageElement = document.getElementById('can1-image');
+            const can2ImageElement = document.getElementById('can2-image');
+
+            // Initial reaction counts for products
+            let productReactions = {
+                can1: { likes: 0, dislikes: 0 },
+                can2: { likes: 0, dislikes: 0 }
+            };
+
+            /**
+             * Changes the displayed image for a given product.
+             * @param {string} canId - The ID of the product ('can1' or 'can2').
+             * @param {number} direction - 1 for next, -1 for previous.
+             */
+            function changeImage(canId, direction) {
+                let images, currentIndex, imageElement;
+
+                if (canId === 'can1') {
+                    images = can1Images;
+                    currentIndex = can1CurrentIndex;
+                    imageElement = can1ImageElement;
+                } else if (canId === 'can2') {
+                    images = can2Images;
+                    currentIndex = can2CurrentIndex;
+                    imageElement = can2ImageElement;
+                } else {
+                    console.error("Invalid canId provided for changeImage.");
+                    return;
+                }
+
+                // Calculate the new index, ensuring it wraps around
+                currentIndex = (currentIndex + direction + images.length) % images.length;
+
+                // Update the image source
+                if (imageElement) {
+                    imageElement.src = images[currentIndex];
+                }
+
+                // Update the global current index
+                if (canId === 'can1') {
+                    can1CurrentIndex = currentIndex;
+                } else if (canId === 'can2') {
+                    can2CurrentIndex = currentIndex;
+                }
+            }
+
+            // Automatic image scrolling
+            setInterval(() => {
+                changeImage('can1', 1); // Cycle through images for can1
+            }, 5000); // Change every 5 seconds
+
+            setInterval(() => {
+                changeImage('can2', 1); // Cycle through images for can2
+            }, 5000); // Change every 5 seconds
+
+            /**
+             * Updates the like/dislike count for a specific product.
+             * @param {string} productId - The ID of the product (e.g., 'can1', 'can2').
+             * @param {string} reactionType - The type of reaction ('likes' or 'dislikes').
+             */
+            function updateReaction(productId, reactionType) {
+                if (productReactions[productId]) {
+                    productReactions[productId][reactionType]++;
+                    document.getElementById(`${productId}-${reactionType}`).textContent = productReactions[productId][reactionType];
+                }
+            }
+
+            /**
+             * Initializes the displayed reaction counts.
+             */
+            function initializeReactionCounts() {
+                document.getElementById('can1-likes').textContent = productReactions.can1.likes;
+                document.getElementById('can1-dislikes').textContent = productReactions.can1.dislikes;
+                document.getElementById('can2-likes').textContent = productReactions.can2.likes;
+                document.getElementById('can2-dislikes').textContent = productReactions.can2.dislikes;
+            }
+
+            // Call to initialize counts when the page loads
+            initializeReactionCounts();
+
+
+            // --- Zoom Modal Functions ---
+            const zoomModal = document.getElementById('zoomModal');
+            const zoomedImage = document.getElementById('zoomedImage');
+            const zoomOutBtn = document.getElementById('zoomOutBtn');
+            const zoomInBtn = document.getElementById('zoomInBtn');
+            const zoomLevelText = document.getElementById('zoomLevelText');
+
+            let currentZoom = 1; // Initial zoom level
+            const zoomStep = 0.2; // How much to zoom in/out by
+            const minZoom = 0.5; // Minimum zoom level (50%)
+            const maxZoom = 3;   // Maximum zoom level (300%)
+
+            /**
+             * Applies the current zoom level to the zoomed image.
+             */
+            function applyZoom() {
+                zoomedImage.style.transform = `scale(${currentZoom})`;
+                zoomLevelText.textContent = `${Math.round(currentZoom * 100)}%`;
+
+                // Disable/enable buttons based on zoom level
+                zoomOutBtn.disabled = currentZoom <= minZoom;
+                zoomInBtn.disabled = currentZoom >= maxZoom;
+            }
+
+            /**
+             * Handles zoom in/out functionality.
+             * @param {number} direction - 1 for zoom in, -1 for zoom out.
+             */
+            window.handleZoom = function(direction) { // Make handleZoom globally accessible
+                const newZoom = currentZoom + (direction * zoomStep);
+                currentZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+                applyZoom();
+            }
+
+            /**
+             * Displays the zoom modal with the clicked image.
+             * @param {string} imageUrl - The URL of the image to display.
+             */
+            window.showZoomedImage = function(imageUrl) { // Make showZoomedImage globally accessible
+                zoomedImage.src = imageUrl;
+                currentZoom = 1; // Reset zoom to default when opening
+                applyZoom();     // Apply the default zoom
+                zoomModal.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+
+            /**
+             * Hides the zoom modal.
+             */
+            window.hideZoomedImage = function() { // Make hideZoomedImage globally accessible
+                zoomModal.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+                // Reset image position (if dragging was implemented)
+                zoomedImage.style.transform = `scale(1)`;
+            }
+
+            // Optional: Implement draggable functionality for the zoomed image
+            let isDragging = false;
+            let startX, startY, startLeft, startTop;
+
+            zoomedImage.addEventListener('mousedown', (e) => {
+                if (currentZoom > 1) { // Only drag if zoomed in
+                    isDragging = true;
+                    zoomedImage.style.cursor = 'grabbing';
+                }
+                startX = e.clientX;
+                startY = e.clientY;
+                // Get current transform values or initialize
+                const transform = window.getComputedStyle(zoomedImage).transform;
+                const matrix = new DOMMatrixReadOnly(transform);
+                startLeft = matrix.m41; // translateX
+                startTop = matrix.m42;  // translateY
+            });
+
+            zoomedImage.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault(); // Prevent text selection etc.
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                zoomedImage.style.transform = `scale(${currentZoom}) translate(${startLeft + dx}px, ${startTop + dy}px)`;
+            });
+
+            zoomedImage.addEventListener('mouseup', () => {
+                isDragging = false;
+                zoomedImage.style.cursor = 'grab';
+            });
+
+            zoomedImage.addEventListener('mouseleave', () => {
+                if (isDragging) { // If dragging off the image, stop dragging
+                    isDragging = false;
+                    zoomedImage.style.cursor = 'grab';
+                }
+            });
+
+
+            // --- Flavor Story Modal Functions ---
+            const flavorStoryModal = document.getElementById('flavorStoryModal');
+            const flavorStoryTitle = document.getElementById('flavorStoryTitle');
+            const flavorStoryContent = document.getElementById('flavorStoryContent');
+
+            // Define static content for each flavor story
+            const flavorStories = {
+                'Rose Cardamom & Coconut': `
+                    <p class="mb-4">
+                        Embark on a fragrant journey with our <strong>Rose Cardamom & Coconut</strong> sparkling water. 🌹 Our exquisite rose petals are sourced from the lush valleys of <strong>Kannauj, India</strong>, renowned for its ancient perfumery traditions, infusing a delicate, romantic essence.
+                    </p>
+                    <p class="mb-4">
+                        The warm, aromatic embrace of cardamom pods hails from the spice gardens of <strong>Kerala, India</strong>, where families have perfected its cultivation for generations, lending a comforting yet exotic spice. 🌿
+                    </p>
+                    <p class="mb-4">
+                        Finally, the creamy, tropical whisper of coconut 🥥 is gathered from sun-kissed groves in the coastal regions of <strong>South India</strong>, adding a silky smooth finish.
+                    </p>
+                    <p>
+                        Together, these authentic flavors create a harmonious symphony, a story of ancient lands and serene moments, bottled for your pure indulgence. ✨ Taste the romance of India in every sparkling sip!
+                    </p>
+                `,
+                'Jamun Himalayan Honey & Rali Mirch': `
+                    <p class="mb-4">
+                        Prepare for a captivating adventure with our <strong>Jamun Himalayan Honey & Rali Mirch</strong> sparkling water! 💜 Our vibrant jamun, with its distinctive tartness, comes from the heartlands of <strong>Uttar Pradesh, India</strong>, a fruit celebrated for its bold character and rich heritage.
+                    </p>
+                    <p class="mb-4">
+                        The golden sweetness of our Himalayan honey 🏔️ is lovingly gathered by resilient beekeepers from the pristine foothills of the <strong>Indian Himalayas</strong>, offering a natural, earthy balance.
+                    </p>
+                    <p class="mb-4">
+                        And for that unforgettable kick, the fiery Rali Mirch 🌶️ (a specific red chili) is carefully cultivated in the sun-drenched fields of <strong>Rajasthan, India</strong>, adding a surprising, yet perfectly balanced, heat.
+                    </p>
+                    <p>
+                        This is a flavor profile that dares to be different, a narrative woven with tradition, zest, and the untamed spirit of India. 🔥 Experience the thrill and depth of India with every adventurous gulp!
+                    </p>
+                `
+            };
+
+            /**
+             * Displays a flavor story based on the flavor name.
+             * @param {string} productId - The ID of the product (unused, but kept for function signature consistency).
+             * @param {string} flavorName - The name of the flavor.
+             */
+            window.showFlavorStoryModal = async function(productId, flavorName) { // Make globally accessible
+                flavorStoryTitle.textContent = `The Story of ${flavorName}`;
+                flavorStoryContent.innerHTML = ''; // Clear previous content
+
+                const story = flavorStories[flavorName];
+                if (story) {
+                    flavorStoryContent.innerHTML = story;
+                } else {
+                    flavorStoryContent.innerHTML = "Story not available for this flavor. Please check back soon!";
+                }
+                
+                flavorStoryModal.classList.add('active'); // Make the modal visible
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            }
+
+            /**
+             * Hides the flavor story modal.
+             */
+            window.hideFlavorStoryModal = function() { // Make globally accessible
+                flavorStoryModal.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+                flavorStoryContent.innerHTML = ''; // Clear content
+                flavorStoryTitle.textContent = ''; // Clear title
+            }
+        }); // End DOMContentLoaded
+    </script>
 </head>
 <body class="bg-white text-gray-800 antialiased leading-normal">
     <!-- Header Section - Clean, white, sticky -->
@@ -372,7 +651,7 @@
     <footer id="contact" class="bg-gray-50 text-gray-700 py-10 px-6 md:px-12 border-t border-gray-200">
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center justify-between">
             <div class="text-center md:text-left">
-                <a href="#" class="h-12 md:h-16 flex items-center justify-center md:justify-start">
+                <a href="#" class="h-12 md:h-16 flex items-center">
                     <img src="https://ik.imagekit.io/97vbpbrok/can_overlays/Screenshot%202025-08-25%20223715.png?updatedAt=1756141679077" alt="Qalaa Logo" class="h-full object-contain">
                 </a>
                 <p class="text-sm mt-2">Refreshing hydration, naturally flavored.</p>
@@ -410,276 +689,7 @@
             <button class="flavor-close-button" onclick="hideFlavorStoryModal()">X</button>
             <h3 id="flavorStoryTitle" class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-4"></h3>
             <p id="flavorStoryContent" class="text-base md:text-lg text-gray-700 leading-relaxed"></p>
-            <!-- Restored the loading indicator div, but it's always hidden as content is static -->
-            <div id="flavorStoryLoading" class="hidden mt-4">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-                <p class="text-gray-600 mt-2">Crafting your flavor journey...</p>
-            </div>
         </div>
     </div>
-
-    <script>
-        // Arrays of image URLs for each product
-        const can1Images = [
-            "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%201%20front%20without%20background.png?updatedAt=1756134215444",
-            "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%201%20the%20other%20side%20without%20background.png?updatedAt=1756134215558"
-        ];
-
-        const can2Images = [
-            "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%202%20front%20without%20background_.png?updatedAt=1756134215477",
-            "https://ik.imagekit.io/97vbpbrok/can_overlays/CAN%202%20other%20side%20with%20background.png?updatedAt=1756134215579"
-        ];
-
-        // Current index for each product's image
-        let can1CurrentIndex = 0;
-        let can2CurrentIndex = 0;
-
-        // Get initial image elements
-        const can1ImageElement = document.getElementById('can1-image');
-        const can2ImageElement = document.getElementById('can2-image');
-
-        // Initial reaction counts for products
-        let productReactions = {
-            can1: { likes: 0, dislikes: 0 },
-            can2: { likes: 0, dislikes: 0 }
-        };
-
-        /**
-         * Changes the displayed image for a given product.
-         * @param {string} canId - The ID of the product ('can1' or 'can2').
-         * @param {number} direction - 1 for next, -1 for previous.
-         */
-        function changeImage(canId, direction) {
-            let images, currentIndex, imageElement;
-
-            if (canId === 'can1') {
-                images = can1Images;
-                currentIndex = can1CurrentIndex;
-                imageElement = can1ImageElement;
-            } else if (canId === 'can2') {
-                images = can2Images;
-                currentIndex = can2CurrentIndex;
-                imageElement = can2ImageElement;
-            } else {
-                console.error("Invalid canId provided for changeImage.");
-                return;
-            }
-
-            // Calculate the new index, ensuring it wraps around
-            currentIndex = (currentIndex + direction + images.length) % images.length;
-
-            // Update the image source
-            if (imageElement) {
-                imageElement.src = images[currentIndex];
-            }
-
-            // Update the global current index
-            if (canId === 'can1') {
-                can1CurrentIndex = currentIndex;
-            } else if (canId === 'can2') {
-                can2CurrentIndex = currentIndex;
-            }
-        }
-
-        // Automatic image scrolling
-        setInterval(() => {
-            changeImage('can1', 1); // Cycle through images for can1
-        }, 5000); // Change every 5 seconds
-
-        setInterval(() => {
-            changeImage('can2', 1); // Cycle through images for can2
-        }, 5000); // Change every 5 seconds
-
-        /**
-         * Updates the like/dislike count for a specific product.
-         * @param {string} productId - The ID of the product (e.g., 'can1', 'can2').
-         */
-        function updateReaction(productId, reactionType) {
-            if (productReactions[productId]) {
-                productReactions[productId][reactionType]++;
-                document.getElementById(`${productId}-${reactionType}`).textContent = productReactions[productId][reactionType];
-            }
-        }
-
-        /**
-         * Initializes the displayed reaction counts.
-         */
-        function initializeReactionCounts() {
-            document.getElementById('can1-likes').textContent = productReactions.can1.likes;
-            document.getElementById('can1-dislikes').textContent = productReactions.can1.dislikes;
-            document.getElementById('can2-likes').textContent = productReactions.can2.likes;
-            document.getElementById('can2-dislikes').textContent = productReactions.can2.dislikes;
-        }
-
-        // Call to initialize counts when the page loads
-        document.addEventListener('DOMContentLoaded', initializeReactionCounts);
-
-
-        // --- Zoom Modal Functions ---
-        const zoomModal = document.getElementById('zoomModal');
-        const zoomedImage = document.getElementById('zoomedImage');
-        const zoomOutBtn = document.getElementById('zoomOutBtn');
-        const zoomInBtn = document.getElementById('zoomInBtn');
-        const zoomLevelText = document.getElementById('zoomLevelText');
-
-        let currentZoom = 1; // Initial zoom level
-        const zoomStep = 0.2; // How much to zoom in/out by
-        const minZoom = 0.5; // Minimum zoom level (50%)
-        const maxZoom = 3;   // Maximum zoom level (300%)
-
-        /**
-         * Applies the current zoom level to the zoomed image.
-         */
-        function applyZoom() {
-            zoomedImage.style.transform = `scale(${currentZoom})`;
-            zoomLevelText.textContent = `${Math.round(currentZoom * 100)}%`;
-
-            // Disable/enable buttons based on zoom level
-            zoomOutBtn.disabled = currentZoom <= minZoom;
-            zoomInBtn.disabled = currentZoom >= maxZoom;
-        }
-
-        /**
-         * Handles zoom in/out functionality.
-         * @param {number} direction - 1 for zoom in, -1 for zoom out.
-         */
-        function handleZoom(direction) {
-            const newZoom = currentZoom + (direction * zoomStep);
-            currentZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
-            applyZoom();
-        }
-
-        /**
-         * Displays the zoom modal with the clicked image.
-         * @param {string} imageUrl - The URL of the image to display.
-         */
-        function showZoomedImage(imageUrl) {
-            zoomedImage.src = imageUrl;
-            currentZoom = 1; // Reset zoom to default when opening
-            applyZoom();     // Apply the default zoom
-            zoomModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-
-        /**
-         * Hides the zoom modal.
-         */
-        function hideZoomedImage() {
-            zoomModal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-            // Reset image position (if dragging was implemented)
-            zoomedImage.style.transform = `scale(1)`;
-        }
-
-        // Optional: Implement draggable functionality for the zoomed image
-        let isDragging = false;
-        let startX, startY, startLeft, startTop;
-
-        zoomedImage.addEventListener('mousedown', (e) => {
-            if (currentZoom > 1) { // Only drag if zoomed in
-                isDragging = true;
-                zoomedImage.style.cursor = 'grabbing';
-            }
-            startX = e.clientX;
-            startY = e.clientY;
-            // Get current transform values or initialize
-            const transform = window.getComputedStyle(zoomedImage).transform;
-            const matrix = new DOMMatrixReadOnly(transform);
-            startLeft = matrix.m41; // translateX
-            startTop = matrix.m42;  // translateY
-        });
-
-        zoomedImage.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault(); // Prevent text selection etc.
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-
-            zoomedImage.style.transform = `scale(${currentZoom}) translate(${startLeft + dx}px, ${startTop + dy}px)`;
-        });
-
-        zoomedImage.addEventListener('mouseup', () => {
-            isDragging = false;
-            zoomedImage.style.cursor = 'grab';
-        });
-
-        zoomedImage.addEventListener('mouseleave', () => {
-            if (isDragging) { // If dragging off the image, stop dragging
-                isDragging = false;
-                zoomedImage.style.cursor = 'grab';
-            }
-        });
-
-
-        // --- Flavor Story Modal Functions ---
-        const flavorStoryModal = document.getElementById('flavorStoryModal');
-        const flavorStoryTitle = document.getElementById('flavorStoryTitle');
-        const flavorStoryContent = document.getElementById('flavorStoryContent');
-        // The loading indicator element exists but is permanently hidden in HTML.
-        // const flavorStoryLoading = document.getElementById('flavorStoryLoading'); // No longer actively used in JS for class toggling
-
-        // Define static content for each flavor story
-        const flavorStories = {
-            'Rose Cardamom & Coconut': `
-                <p class="mb-4">
-                    Embark on a fragrant journey with our <strong>Rose Cardamom & Coconut</strong> sparkling water. 🌹 Our exquisite rose petals are sourced from the lush valleys of <strong>Kannauj, India</strong>, renowned for its ancient perfumery traditions, infusing a delicate, romantic essence.
-                </p>
-                <p class="mb-4">
-                    The warm, aromatic embrace of cardamom pods hails from the spice gardens of <strong>Kerala, India</strong>, where families have perfected its cultivation for generations, lending a comforting yet exotic spice. 🌿
-                </p>
-                <p class="mb-4">
-                    Finally, the creamy, tropical whisper of coconut 🥥 is gathered from sun-kissed groves in the coastal regions of <strong>South India</strong>, adding a silky smooth finish.
-                </p>
-                <p>
-                    Together, these authentic flavors create a harmonious symphony, a story of ancient lands and serene moments, bottled for your pure indulgence. ✨ Taste the romance of India in every sparkling sip!
-                </p>
-            `,
-            'Jamun Himalayan Honey & Rali Mirch': `
-                <p class="mb-4">
-                    Prepare for a captivating adventure with our <strong>Jamun Himalayan Honey & Rali Mirch</strong> sparkling water! 💜 Our vibrant jamun, with its distinctive tartness, comes from the heartlands of <strong>Uttar Pradesh, India</strong>, a fruit celebrated for its bold character and rich heritage.
-                </p>
-                <p class="mb-4">
-                    The golden sweetness of our Himalayan honey 🏔️ is lovingly gathered by resilient beekeepers from the pristine foothills of the <strong>Indian Himalayas</strong>, offering a natural, earthy balance.
-                </p>
-                <p class="mb-4">
-                    And for that unforgettable kick, the fiery Rali Mirch 🌶️ (a specific red chili) is carefully cultivated in the sun-drenched fields of <strong>Rajasthan, India</strong>, adding a surprising, yet perfectly balanced, heat.
-                </p>
-                <p>
-                    This is a flavor profile that dares to be different, a narrative woven with tradition, zest, and the untamed spirit of India. 🔥 Experience the thrill and depth of India with every adventurous gulp!
-                </p>
-            `
-        };
-
-        /**
-         * Displays a flavor story based on the flavor name.
-         * @param {string} productId - The ID of the product (unused, but kept for function signature consistency).
-         * @param {string} flavorName - The name of the flavor.
-         */
-        async function showFlavorStoryModal(productId, flavorName) {
-            flavorStoryTitle.textContent = `The Story of ${flavorName}`;
-            flavorStoryContent.innerHTML = ''; // Clear previous content
-            // The loading indicator is always hidden in HTML, so no JS manipulation needed here.
-
-            const story = flavorStories[flavorName];
-            if (story) {
-                flavorStoryContent.innerHTML = story;
-            } else {
-                flavorStoryContent.innerHTML = "Story not available for this flavor. Please check back soon!";
-            }
-            
-            flavorStoryModal.classList.add('active'); // Make the modal visible
-            document.body.style.overflow = 'hidden'; // Prevent background scrolling
-        }
-
-        /**
-         * Hides the flavor story modal.
-         */
-        function hideFlavorStoryModal() {
-            flavorStoryModal.classList.remove('active');
-            document.body.style.overflow = ''; // Restore scrolling
-            flavorStoryContent.innerHTML = ''; // Clear content
-            flavorStoryTitle.textContent = ''; // Clear title
-        }
-    </script>
 </body>
 </html>
